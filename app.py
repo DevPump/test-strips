@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from datetime import date
 from os import path
 import os.path
