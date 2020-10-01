@@ -1,87 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test-Strips</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-</head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
+  </head>
 
-<body style='background-color:black; color:white'>
-    <div id="app" class="container-fluid">
-        <form action="/api/writedata" method="POST">
-            {% for single_strip_key in strip_options %}
-            <label>{{ single_strip_key }}: </label>
-            <select name="{{ single_strip_key }}" class="form-control">
-                {% for single_strip_value in strip_options[single_strip_key] %}
-                <option value="{{ single_strip_value }}">{{ single_strip_value }}</option>
-                {% endfor %}
-            </select>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary mb-2">Submit</button>
-        </form>
-        <div class=" row">
-            <div class="col chart-container" style="width: 300px">
-                <canvas id="NO3_CHART" width="100" height="100"></canvas>
+  <body>
+    <div id="app" class="container">
+      <h1>
+        Test Strips
+        <button
+          type="button"
+          class="btn btn-primary float-right m-2"
+          data-toggle="modal"
+          data-target="#addResultsModal"
+        >
+          Add New Test
+        </button>
+      </h1>
+      <div class="row">&nbsp;</div>
+      <div class="row">&nbsp;</div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <canvas id="NO3_CHART"></canvas>
             </div>
-            <div class="col chart-container" style="width: 300px">
-                <canvas id="NO2_CHART" width="100" height="100"></canvas>
-            </div>
-            <div class="col chart-container" style="width: 300px">
-                <canvas id="PH_CHART" width="100" height="100"></canvas>
-            </div>
+          </div>
         </div>
-        <div class="row">
-            <div class="col chart-container" style="width: 300px">
-                <canvas id="KH_CHART" width="100" height="100"></canvas>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <canvas id="NO2_CHART"></canvas>
             </div>
-            <div class="col chart-container" style="width: 300px">
-                <canvas id="GH_CHART" width="100" height="100"></canvas>
-            </div>
+          </div>
         </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <canvas id="PH_CHART"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <canvas id="KH_CHART"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <canvas id="GH_CHART"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
+    <div
+      class="modal fade"
+      id="addResultsModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Test Results</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="/api/writedata" method="POST">
+              {% for single_strip_key in strip_options %}
+              <label>{{ single_strip_key }}: </label>
+              <select name="{{ single_strip_key }}" class="form-control">
+                {% for single_strip_value in strip_options[single_strip_key] %}
+                <option value="{{ single_strip_value }}">
+                  {{ single_strip_value }}
+                </option>
+                {% endfor %}
+              </select>
+              {% endfor %}
+              <div class="row">&nbsp;</div>
+              <button type="submit" class="btn btn-primary mb-2 float-right">
+                Add Test
+              </button>
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="{{ url_for('static', filename='js/jquery-3.5.1.slim.min.js') }}"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="{{ url_for('static', filename='js/popper.min.js') }}"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="{{ url_for('static', filename='js/bootstrap.min.js') }}"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="{{ url_for('static', filename='js/Chart.min.js') }}"
+      integrity="sha384-i+dHPTzZw7YVZOx9lbH5l6lP74sLRtMtwN2XjVqjf3uAGAREAF4LMIUDTWEVs4LI"
+      crossorigin="anonymous"
+    ></script>
     <script>
-        var chartItems = ['NO3', 'NO2', 'PH', 'KH', 'GH'];
-        axios.get('/api/getdata')
-            .then(function (response) {
-                chartItems.forEach((item) => {
-                    if (response.data[item] != undefined) {
-                        createChart(item, response.data[item].dates, response.data[item].dataPoint);
-                    }
-                });
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-        function createChart(chartID, chartDates, chartData) {
-            var ctx = document.getElementById(chartID + '_CHART').getContext('2d');
-            var myBubbleChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: chartDates,
-                    datasets: [{
-                        data: chartData,
-                        label: chartID,
-                        borderColor: "#3e95cd",
-                        fill: true
-                    }]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: chartID + ' Reading Over time'
-                    }
-                }
-            });
+      var chartItems = ['NO3', 'NO2', 'PH', 'KH', 'GH'];
+      {% block javascript %}
+      var recodedData = JSON.parse({{ recorded_data | tojson }});
+        {% endblock %}
+      chartItems.forEach((item) => {
+        if (recodedData[item] != undefined) {
+          createChart(item, recodedData[item].dates, recodedData[item]
+            .dataPoint);
         }
-    </script>
-</body>
+      });
 
+      function createChart(chartID, chartDates, chartData) {
+        var ctx = document.getElementById(chartID + '_CHART').getContext('2d');
+        var myBubbleChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: chartDates,
+            datasets: [{
+              data: chartData,
+              label: chartID,
+              borderColor: "#3e95cd",
+              fill: true
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: chartID + ' Reading Over time'
+            },
+            scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+
+          }
+        });
+      }
+    </script>
+  </body>
 </html>

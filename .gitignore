@@ -1,3 +1,6 @@
 venv
 .env
 data/*
+__pycache__/
+.scannerwork
+.pytest_cache

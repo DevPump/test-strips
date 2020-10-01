@@ -4,6 +4,8 @@ import os.path
 import json
 from flask import Flask, render_template, request, redirect
 from dotenv import load_dotenv
+from waitress import serve
+from flask_wtf.csrf import CSRFProtect
 load_dotenv()
 
 if os.getenv('PYTHON_SENTRY_DSN') is not None:
@@ -23,17 +25,19 @@ strip_options = {'NO3': [0, 20, 40, 80, 160, 200],
                  "GH": [0, 30, 60, 120, 180]
                  }
 appData = 'data/'
-# Create missing data directory.
-if not path.isdir(appData):
-    os.mkdir(appData)
+
+
+def create_missing_data_folder():
+    if not path.isdir(appData):
+        os.mkdir(appData)
+    return True
 
 
 @app.route("/")
 def index():
-    return render_template('index.html', strip_options=strip_options)
+    return render_template('index.html', strip_options=strip_options, recorded_data=get_data())
 
 
-@app.route('/api/getdata')
 def get_data():
     data = {}
     for chart_item in chart_items:
@@ -58,6 +62,7 @@ def get_data():
 
 @ app.route("/api/writedata", methods=['POST'])
 def write_data():
+    create_missing_data_folder()
     data_to_write = request.form
     for chart_item in chart_items:
         if chart_item in data_to_write:
@@ -75,5 +80,17 @@ def write_data():
     return redirect('/')
 
 
+def setup_csrf():
+    csrf = CSRFProtect()
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    csrf.init_app(app)
+    return True
+
+
 if __name__ == "__main__":
-    app.run()
+    create_missing_data_folder()
+    setup_csrf()
+    if os.getenv('DEBUG_STATUS') == 'True':
+        app.run()
+    else:
+        serve(app, host="0.0.0.0", port=9004)
