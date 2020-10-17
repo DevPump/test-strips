@@ -18,13 +18,13 @@ if os.getenv('PYTHON_SENTRY_DSN') is not None:
 
 app = Flask(__name__, template_folder='./static')
 
-chart_items = ['NO3', 'NO2', 'PH', 'KH', 'GH']
-strip_options = {'NO3': [0, 20, 40, 80, 160, 200],
-                 'NO2': [0, 0.5, 1, 3, 5, 10],
-                 "PH": [6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0],
-                 "KH": [0, 40, 80, 120, 180, 240],
-                 "GH": [0, 30, 60, 120, 180],
-                 "NH3NH4": [0, 0.25, 0.50, 1.0, 2.0, 4.0, 8.0]
+chart_items = ['NO3', 'NO2', 'PH', 'KH', 'GH', 'NH3NH4']
+strip_options = {'NO3': ['N/A', 0, 20, 40, 80, 160, 200],
+                 'NO2': ['N/A', 0, 0.5, 1, 3, 5, 10],
+                 "PH": ['N/A', 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0],
+                 "KH": ['N/A', 0, 40, 80, 120, 180, 240],
+                 "GH": ['N/A', 0, 30, 60, 120, 180],
+                 "NH3NH4": ['N/A', 0, 0.25, 0.50, 1.0, 2.0, 4.0, 8.0]
                  }
 appData = 'data/'
 
@@ -68,6 +68,8 @@ def write_data():
     data_to_write = request.form
     for chart_item in chart_items:
         if chart_item in data_to_write:
+            if data_to_write[chart_item] == 'N/A':
+                continue
             file_path = appData + chart_item + '.txt'
             write_method = 'a'
             leading_new_line = ""
