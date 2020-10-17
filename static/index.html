@@ -74,6 +74,15 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <canvas id="NH3NH4_CHART"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div
@@ -154,7 +163,7 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      var chartItems = ['NO3', 'NO2', 'PH', 'KH', 'GH'];
+      var chartItems = ['NO3', 'NO2', 'PH', 'KH', 'GH', 'NH3NH4'];
       {% block javascript %}
       var recodedData = JSON.parse({{ recorded_data | tojson }});
         {% endblock %}
