@@ -75,8 +75,6 @@ def write_data():
             leading_new_line = ""
             if not path.isfile(file_path):
                 write_method = 'w+'
-            else:
-                leading_new_line = "\n"
             chart_file = open(file_path, write_method)
             chart_file.writelines(leading_new_line + str(date.today()) +
                                   "\n" + data_to_write[chart_item])
